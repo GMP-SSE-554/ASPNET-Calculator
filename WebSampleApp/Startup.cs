@@ -26,13 +26,22 @@ namespace WebSampleApp
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHeaderMiddleware();
+            app.UseHeading1Middleware();
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
             app.UseStaticFiles();
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync(RequestAndResponseSample.GetRequestInformation(context.Request));
+                string result = string.Empty;
+                switch (context.Request.Path.Value.ToLower())
+                {
+                    case "/form":
+                        result = RequestAndResponseSample.GetForm(context.Request);
+                        break;
+                }
+                await context.Response.WriteAsync(result);
             });
         }
     }
